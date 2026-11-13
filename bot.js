@@ -6,8 +6,8 @@
 const https = require('https');
 
 const BOT_TOKEN = '9174197595:AAFy9sSS8DiGEjVwJee2OTAHdP45bsDVJIE';
-// Replace with your public HTTPS URL (e.g. GitHub Pages or Cloudflare Pages URL)
-const WEBAPP_URL = 'https://yourusername.github.io/ariyak_store/'; 
+// User's verified GitHub Pages URL
+const WEBAPP_URL = 'https://romthanun.github.io/Ministore/'; 
 
 let lastUpdateId = 0;
 
