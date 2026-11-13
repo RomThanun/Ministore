@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <defs>
+    <linearGradient id="adobeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff0000"/>
+      <stop offset="100%" stop-color="#da0000"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#adobeGrad)"/>
+  <path d="M40.5 24c-1.8 0-3.4.6-4.7 1.7-1.4-2.8-4.4-4.7-7.8-4.7-4.9 0-8.9 4-8.9 8.9 0 .4 0 .9.1 1.3C16.8 32.1 15 34.3 15 37c0 3.3 2.7 6 6 6h19.5c4.7 0 8.5-3.8 8.5-8.5S45.2 24 40.5 24zm0 11.5H21c-1.7 0-3-1.3-3-3 0-1.4 1-2.6 2.4-2.9l1.4-.3.2-1.4c-.1-.3-.1-.6-.1-.9 0-3.3 2.7-6 6-6 2.6 0 4.9 1.7 5.7 4.1l.4 1.4 1.4-.4c.7-.2 1.4-.3 2.1-.3 3.3 0 6 2.7 6 6s-2.7 6-6 6z" fill="#ffffff" fill-rule="evenodd"/>
+</svg>

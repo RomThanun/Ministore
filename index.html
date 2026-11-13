@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ariyak Store - Telegram Mini App</title>
+
+    <!-- Google Fonts: Kantumruy Pro (Khmer) & Inter (English) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- External Libraries: Telegram WebApp SDK & QRCode.js -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Modular Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Ambient Glowing Background Effect -->
+    <div class="ambient-glow"></div>
+
+    <div class="app-wrapper">
+
+        <!-- ==================== TOP NAVIGATION BAR ==================== -->
+        <header class="top-bar">
+            <div class="brand-block">
+                <div class="brand-logo">💎</div>
+                <div class="brand-text">
+                    <h1>ARIYAK STORE</h1>
+                    <p id="topBrandSubtitle">គណនី AI កម្រិត Premium</p>
+                </div>
+            </div>
+            <div class="top-actions">
+                <span class="tg-user-pill" id="tgUserInfo"></span>
+                <button class="currency-btn" onclick="toggleCurrency()" title="Toggle Currency">
+                    <span id="currencyBadge">USD $</span>
+                </button>
+                <button class="lang-btn" onclick="toggleLanguage()" title="Switch Language">
+                    <span id="langFlag">🇰🇭</span>
+                    <span id="langText">ខ្មែរ</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== PAGE 1: STORE (DEFAULT) ==================== -->
+        <div class="page-view active" id="page-store">
+
+            <!-- Hero Welcome Card -->
+            <div class="hero-card">
+                <div class="hero-badge" id="heroBadge">⚡ ធានា ១០០% • 100% Guaranteed</div>
+                <h2 class="hero-title" id="heroTitle">គណនី AI កម្រិត Premium</h2>
+                <p class="hero-subtitle" id="heroSubtitle">ទិញភ្លាម ប្រើបានភ្លាមៗ ជាមួយតម្លៃពិសេសបំផុត</p>
+                <div class="hero-perks">
+                    <span>⚡ <b id="perkInstant">Instant Delivery</b></span>
+                    <span>🛡️ <b id="perkWarranty">Full Warranty</b></span>
+                    <span>🇰🇭 <b id="perkKHQR">KHQR / ABA Pay</b></span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-wrapper">
+                <svg class="search-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="ស្វែងរក CapCut, Gemini, ChatGPT, Claude..." oninput="filterProducts()">
+            </div>
+
+            <!-- In Stock Filter Toggle -->
+            <div class="filter-row">
+                <div class="stock-filter-toggle" id="inStockFilterBtn" onclick="toggleInStockFilter()">
+                    <span>🟢</span>
+                    <span id="stockFilterText">មានក្នុងស្តុកតែប៉ុណ្ណោះ (In Stock Only)</span>
+                </div>
+            </div>
+
+            <!-- Category Chips -->
+            <div class="category-scroll" id="categoryScroll">
+                <button class="cat-chip active" data-cat="all" onclick="selectCategory('all', this)">🔥 ទាំងអស់ (All)</button>
+                <button class="cat-chip" data-cat="ai" onclick="selectCategory('ai', this)">🤖 AI Models</button>
+                <button class="cat-chip" data-cat="creative" onclick="selectCategory('creative', this)">🎬 Creative & Video</button>
+                <button class="cat-chip" data-cat="dev" onclick="selectCategory('dev', this)">💻 Developer Tools</button>
+                <button class="cat-chip" data-cat="media" onclick="selectCategory('media', this)">🍿 Entertainment</button>
+            </div>
+
+            <!-- Product Section Header -->
+            <div class="section-header-row">
+                <div class="section-heading" id="catalogTitle">ទំនិញពេញនិយម (Popular Products)</div>
+                <div class="item-counter" id="itemCounter">15 items</div>
+            </div>
+
+            <!-- Pre-rendered Products Grid (Real Image Brand Icons) -->
+            <div class="products-grid" id="productsGrid">
+
+                <!-- 1. CapCut Pro VIP -->
+                <div class="product-card" onclick="openProductModal('capcut')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/capcut.svg" class="prod-brand-icon" alt="CapCut">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">CapCut Pro VIP</div>
+                        <div class="prod-snippet">ដោះសោគ្រប់ Effect VIP, AI Auto-Captions, 4K 60FPS គ្មាន Watermark</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-capcut">$4.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 2. Gemini Advanced -->
+                <div class="product-card" onclick="openProductModal('gemini')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/gemini.svg" class="prod-brand-icon" alt="Gemini">
+                        </div>
+                        <span class="prod-tag tag-new">NEW</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Gemini Advanced</div>
+                        <div class="prod-snippet">Gemini 1.5 Pro Context 1M tokens ថែមជូនទំហំ Google One 2TB</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-gemini">$8.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 3. ChatGPT Plus (GPT-4o) -->
+                <div class="product-card" onclick="openProductModal('chatgpt')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/chatgpt.svg" class="prod-brand-icon" alt="ChatGPT">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">ChatGPT Plus (GPT-4o)</div>
+                        <div class="prod-snippet">GPT-4o, DALL·E 3, Advanced Data Analysis, Custom GPTs គ្មានដែនកំណត់</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-chatgpt">$9.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 4. Claude Pro (Sonnet 3.5) -->
+                <div class="product-card" onclick="openProductModal('claude')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/claude.svg" class="prod-brand-icon" alt="Claude">
+                        </div>
+                        <span class="prod-tag tag-pro">PRO</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Claude Pro (Sonnet 3.5)</div>
+                        <div class="prod-snippet">ម៉ូដែល AI លំដាប់លេខ ១ ផ្នែក Code, 200K Tokens, Live Artifacts</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-claude">$9.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 5. Canva Pro -->
+                <div class="product-card" onclick="openProductModal('canva')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/canva.svg" class="prod-brand-icon" alt="Canva">
+                        </div>
+                        <span class="prod-tag tag-new">NEW</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Canva Pro</div>
+                        <div class="prod-snippet">លុប Background, 100M+ រូបភាព/វីដេអូ, Magic Studio AI, Cloud 1TB</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-canva">$3.00</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 6. Midjourney v6.1 -->
+                <div class="product-card" onclick="openProductModal('midjourney')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/midjourney.svg" class="prod-brand-icon" alt="Midjourney">
+                        </div>
+                        <span class="prod-tag tag-pro">PRO</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Midjourney v6.1</div>
+                        <div class="prod-snippet">បង្កើតរូបភាព AI គុណភាពដូចរូបថតពិតៗ ជាមួយម៉ូដែល v6.1 និង Fast GPU</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-midjourney">$14.00</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 7. Cursor Pro AI -->
+                <div class="product-card" onclick="openProductModal('cursor')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/cursor.svg" class="prod-brand-icon" alt="Cursor">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Cursor Pro AI</div>
+                        <div class="prod-snippet">500 Fast Requests Claude 3.5 Sonnet, Composer កែកូដច្រើន Files</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-cursor">$9.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 8. Adobe Creative Cloud -->
+                <div class="product-card" onclick="openProductModal('adobe')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/adobe.svg" class="prod-brand-icon" alt="Adobe">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Adobe Creative Cloud</div>
+                        <div class="prod-snippet">Photoshop ជាមួយ AI Generative Fill, Premiere Pro, Illustrator, 100GB Cloud</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-adobe">$12.00</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 9. Perplexity Pro AI -->
+                <div class="product-card" onclick="openProductModal('perplexity')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/perplexity.svg" class="prod-brand-icon" alt="Perplexity">
+                        </div>
+                        <span class="prod-tag tag-new">NEW</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Perplexity Pro AI</div>
+                        <div class="prod-snippet">ស្វែងរក Pro Searches គ្មានដែនកំណត់ Real-time ជាមួយ GPT-4o & Claude</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-perplexity">$7.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 10. ElevenLabs Voice AI -->
+                <div class="product-card" onclick="openProductModal('elevenlabs')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/elevenlabs.svg" class="prod-brand-icon" alt="ElevenLabs">
+                        </div>
+                        <span class="prod-tag tag-pro">PRO</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">ElevenLabs Voice AI</div>
+                        <div class="prod-snippet">Voice Cloning ចម្លងសំឡេង និង Text-to-Speech ២៩ ភាសាដូចមនុស្សពិត</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-elevenlabs">$6.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 11. GitHub Copilot -->
+                <div class="product-card" onclick="openProductModal('copilot')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/copilot.svg" class="prod-brand-icon" alt="Copilot">
+                        </div>
+                        <span class="prod-tag tag-new">NEW</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">GitHub Copilot</div>
+                        <div class="prod-snippet">Autocomplete កូដក្នុង VS Code, Copilot Chat, ស្វែងរក Bug ស្វ័យប្រវត្តិ</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-copilot">$5.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 12. YouTube Premium -->
+                <div class="product-card" onclick="openProductModal('youtube')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/youtube.svg" class="prod-brand-icon" alt="YouTube">
+                        </div>
+                        <span class="prod-tag tag-pro">PRO</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">YouTube Premium</div>
+                        <div class="prod-snippet">គ្មានពាណិជ្ជកម្ម ១០០%, ចាក់សំឡេងពេលបិទអេក្រង់, YouTube Music</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-youtube">$2.00</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 13. Netflix Premium 4K -->
+                <div class="product-card" onclick="openProductModal('netflix')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/netflix.svg" class="prod-brand-icon" alt="Netflix">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Netflix Premium 4K</div>
+                        <div class="prod-snippet">4K Ultra HD + HDR, Dolby Atmos, Profile ផ្ទាល់ខ្លួន មានលេខកូដសម្ងាត់</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-netflix">$3.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 14. Spotify Premium -->
+                <div class="product-card" onclick="openProductModal('spotify')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/spotify.svg" class="prod-brand-icon" alt="Spotify">
+                        </div>
+                        <span class="prod-tag tag-hot">HOT</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">Spotify Premium</div>
+                        <div class="prod-snippet">ស្តាប់ចម្រៀងមិនកំណត់ គ្មានពាណិជ្ជកម្ម សំឡេង HiFi, ទាញយក Offline</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-spotify">$1.80</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+                <!-- 15. NordVPN Premium -->
+                <div class="product-card" onclick="openProductModal('nordvpn')">
+                    <div class="card-header-icon">
+                        <div class="prod-icon-box">
+                            <img src="assets/icons/nordvpn.svg" class="prod-brand-icon" alt="NordVPN">
+                        </div>
+                        <span class="prod-tag tag-pro">PRO</span>
+                    </div>
+                    <div>
+                        <span class="stock-status-pill stock-in"><span class="status-dot-sm"></span><span class="stock-label-text">មានក្នុងស្តុក</span></span>
+                        <div class="prod-title">NordVPN Premium</div>
+                        <div class="prod-snippet">ម៉ាស៊ីនបម្រើ 6000+ ក្នុង 60+ ប្រទេស, No-Log Policy, Threat Protection</div>
+                    </div>
+                    <div class="card-footer-price">
+                        <div class="price-stack">
+                            <span class="price-starting">ចាប់ពី</span>
+                            <span class="price-figure" id="price-nordvpn">$2.50</span>
+                        </div>
+                        <button class="buy-mini-btn">ទិញ</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== PAGE 2: ORDERS ==================== -->
+        <div class="page-view" id="page-orders">
+            <div class="section-header-row">
+                <div class="section-heading" id="ordersPageTitle">ប្រវត្តិនៃការបញ្ជាទិញ (My Orders)</div>
+            </div>
+            <div id="ordersListContainer"></div>
+        </div>
+
+        <!-- ==================== PAGE 3: SUPPORT & ADMIN TELEGRAM ==================== -->
+        <div class="page-view" id="page-support">
+            <div class="support-card" style="text-align: center;">
+                <div style="font-size: 40px; margin-bottom: 8px;">💬</div>
+                <h3 id="suppHeader" style="font-size: 17px; margin-bottom: 6px;">សេវាកម្មអតិថិជន ២៤/៧</h3>
+                <p id="suppSub" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">
+                    មានចម្ងល់ ឬត្រូវការជំនួយក្នុងការប្រើប្រាស់? ទាក់ទង Admin តាម Telegram
+                </p>
+                <button class="primary-action-btn" onclick="openAdminTelegram()">
+                    ✈️ ផ្ញើសារតាម Telegram (Admin)
+                </button>
+            </div>
+
+            <div class="support-card">
+                <h4 id="faqHeading" style="font-size: 15px; margin-bottom: 12px;">❓ សំណួរដែលសួរញឹកញាប់ (FAQ)</h4>
+                <div class="faq-item">
+                    <div class="faq-q" id="faq1Q">១. តើខ្ញុំនឹងទទួលបានគណនីដោយរបៀបណា?</div>
+                    <div class="faq-a" id="faq1A">បន្ទាប់ពីស្កេនទូទាត់រួច Admin នឹងផ្ញើ Email និង Password ចូលប្រើប្រាស់ទៅកាន់ Telegram របស់អ្នកក្នុងរយៈពេល ៥-១៥ នាទី។</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" id="faq2Q">២. តើមានការធានា (Warranty) ដែរឬទេ?</div>
+                    <div class="faq-a" id="faq2A">យើងមានការធានាពេញមួយរយៈពេលនៃគម្រោងដែលអ្នកបានទិញ (Full Warranty)។ បើមានបញ្ហា យើងនឹងដោះស្រាយ ឬប្តូរគណនីថ្មីជូនភ្លាមៗ។</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" id="faq3Q">៣. តើអាចទូទាត់តាមធនាគារណាខ្លះ?</div>
+                    <div class="faq-a" id="faq3A">អ្នកអាចស្កេនទូទាត់តាមគ្រប់ធនាគារនៅកម្ពុជា តាមរយៈប្រព័ន្ធ KHQR (ABA, Bakong, ACLEDA, Wing, Canadia, etc.)។</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PAGE 4: SETTINGS & PAYMENT CONFIG ==================== -->
+        <div class="page-view" id="page-settings">
+            <!-- General Settings -->
+            <div class="settings-group">
+                <h4 style="font-size:15px; margin-bottom:12px;">⚙️ ការកំណត់ទូទៅ (General Settings)</h4>
+                <div class="settings-item">
+                    <div>
+                        <div class="settings-label" id="settLangLabel">ភាសា (Language)</div>
+                        <div class="settings-desc">ជ្រើសរើសភាសាខ្មែរ ឬ អង់គ្លេស</div>
+                    </div>
+                    <button class="lang-btn" onclick="toggleLanguage()">
+                        <span id="settLangDisplay">🇰🇭 ខ្មែរ (Khmer)</span>
+                    </button>
+                </div>
+                <div class="settings-item">
+                    <div>
+                        <div class="settings-label" id="settCurrLabel">រូបិយប័ណ្ណ (Currency)</div>
+                        <div class="settings-desc">ដុល្លារ ($) ឬ រៀល (៛)</div>
+                    </div>
+                    <button class="currency-btn" onclick="toggleCurrency()">
+                        <span id="settCurrDisplay">USD ($)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment & Admin Configuration -->
+            <div class="settings-group">
+                <h4 style="font-size:15px; margin-bottom:6px;">💳 គណនីទូទាត់ និង Admin (Store Payment & Tele Config)</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+                    កំណត់គណនី ABA / Bakong និង Telegram Admin ដើម្បីទទួលលុយ និងសារអតិថិជន៖
+                </p>
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary);">Admin Telegram URL / Username:</label>
+                <input type="text" id="settingAdminTele" class="input-text-dark" placeholder="https://web.telegram.org/k/ or @your_username" value="https://web.telegram.org/k/">
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary); margin-top:8px; display:block;">Bakong ID / Phone (KHQR Auto-Price):</label>
+                <input type="text" id="settingBakongId" class="input-text-dark" placeholder="e.g. ariyak_store@aclb or 081234567" value="ariyak_store@aclb">
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary); margin-top:8px; display:block;">Custom ABA PayWay Link (Optional):</label>
+                <input type="text" id="settingAbaPayLink" class="input-text-dark" placeholder="https://link.payway.com.kh/..." value="">
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary); margin-top:8px; display:block;">Custom Static QR Image URL (Optional):</label>
+                <input type="text" id="settingCustomQr" class="input-text-dark" placeholder="e.g. assets/my_aba_qr.png or online URL" value="">
+
+                <button class="primary-action-btn" style="margin-top:14px;" onclick="saveMerchantSettings()">
+                    💾 រក្សាទុកការកំណត់ (Save Settings)
+                </button>
+            </div>
+
+            <!-- Telegram Bot & Order Notification Config -->
+            <div class="settings-group">
+                <h4 style="font-size:15px; margin-bottom:6px;">🤖 Telegram Bot Notifications</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+                    Bot Token និង Chat ID សម្រាប់ទទួលសារ Alert រាល់ពេលមានការបញ្ជាទិញថ្មី៖
+                </p>
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary);">Telegram Bot Token:</label>
+                <input type="text" id="settingBotToken" class="input-text-dark" placeholder="Bot Token from @BotFather" value="9174197595:AAFy9sSS8DiGEjVwJee2OTAHdP45bsDVJIE">
+
+                <label style="font-size:12px; font-weight:700; color:var(--text-secondary); margin-top:8px; display:block;">Admin Chat ID (ដើម្បីទទួល Orders):</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="text" id="settingAdminChatId" class="input-text-dark" placeholder="e.g. 123456789" style="margin-bottom:0;" value="">
+                    <button class="buy-mini-btn" style="padding:10px 12px; white-space:nowrap; margin-top:6px;" onclick="detectMyChatId()">
+                        🔍 Auto-Detect
+                    </button>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                    *ដើម្បី Auto-Detect សូមបើក Telegram ហើយផ្ញើសារ <code>/start</code> ទៅកាន់ Bot របស់អ្នកជាមុនសិន។
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button class="primary-action-btn" style="margin-bottom:0; flex:1;" onclick="saveMerchantSettings()">
+                        💾 រក្សាទុក (Save)
+                    </button>
+                    <button class="secondary-action-btn" style="flex:1;" onclick="testBotNotification()">
+                        🚀 តេស្តផ្ញើសារ (Test)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stock Management (Owner can toggle stock for each product) -->
+            <div class="settings-group">
+                <h4 style="font-size:15px; margin-bottom:6px;">📦 ការគ្រប់គ្រងស្តុក (Stock Management)</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+                    ចុចប្តូរស្ថានភាពស្តុក (In Stock / Out of Stock) សម្រាប់ CapCut, Gemini, ChatGPT, Claude...៖
+                </p>
+                <div id="stockManagementList"></div>
+            </div>
+        </div>
+
+        <!-- ==================== BOTTOM NAVIGATION ==================== -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="switchPage('store', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span id="navStore">Store</span>
+            </button>
+            <button class="nav-btn" onclick="switchPage('orders', this)">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                <span id="navOrders">Orders</span>
+            </button>
+            <button class="nav-btn" onclick="switchPage('support', this)">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                <span id="navSupport">Support</span>
+            </button>
+            <button class="nav-btn" onclick="switchPage('settings', this)">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span id="navSettings">Settings</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ==================== UNIFIED MODAL: DETAILS + INSTANT KHQR + ABA PAY ==================== -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header-bar">
+                <span class="sheet-heading" id="modalSheetHeading">ព័ត៌មានលម្អិត & ស្កេនទូទាត់</span>
+                <button class="sheet-close-btn" onclick="closeModal('productModal')">✕</button>
+            </div>
+
+            <!-- Product Header Summary with Brand Logo -->
+            <div class="modal-product-summary">
+                <div class="modal-large-avatar" id="modalProductIcon">
+                    <img src="assets/icons/capcut.svg" class="prod-brand-icon" alt="Product">
+                </div>
+                <div>
+                    <h4 id="modalProductName" style="font-size:17px; font-weight:800;">CapCut Pro VIP</h4>
+                    <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                        <span id="modalProductBadge" class="prod-tag tag-hot">HOT</span>
+                        <span id="modalProductStock" class="stock-status-pill stock-in">
+                            <span class="status-dot-sm"></span>
+                            <span class="stock-text">In Stock</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Description -->
+            <p class="modal-product-desc" id="modalProductDesc"></p>
+
+            <!-- Product Features List -->
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px; display:block;" id="modalFeaturesLabel">
+                ✨ អត្ថប្រយោជន៍ (Features Included):
+            </label>
+            <ul class="feature-bullets" id="modalProductFeatures"></ul>
+
+            <!-- Plan Duration Selector -->
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px; display:block;" id="modalChoosePlanLabel">
+                📋 ជ្រើសរើសរយៈពេល (Choose Duration):
+            </label>
+            <div class="plans-selection-list" id="modalPlansList"></div>
+
+            <!-- Dynamic Live Exact KHQR Code Section -->
+            <div class="qr-sheet-center" id="modalQRSection">
+                <div class="amount-display-card">
+                    <div class="target-plan" id="qrPlanSubtitle">CapCut Pro VIP • 1 Month</div>
+                    <div class="exact-sum" id="qrExactAmountDisplay">$4.50</div>
+                    <div class="dual-currency" id="qrDualCurrencyDisplay">≈ 18,450 KHR</div>
+                    <div style="font-size:11px; color:var(--accent-green); margin-top:2px;">
+                        ● តម្លៃជាក់ស្តែងត្រូវបានកំណត់ក្នុង QR រួចជាស្រេច
+                    </div>
+                </div>
+
+                <div class="timer-pill">
+                    <span>⏱️ <span id="timerLabel">ផុតកំណត់ក្នុងរយៈពេល:</span></span>
+                    <strong id="qrCountdownClock">15:00</strong>
+                </div>
+
+                <div class="qr-canvas-holder">
+                    <div id="qrCodeArea"></div>
+                </div>
+
+                <!-- 1-Click Pay directly in ABA Mobile -->
+                <button class="aba-pay-action-btn" id="btnPayAba" onclick="triggerAbaPay()">
+                    📲 <span>បើក ABA Mobile ទូទាត់ភ្លាមៗ</span>
+                </button>
+
+                <!-- Download / Save QR Code Image -->
+                <button class="save-qr-btn" id="btnSaveQrImage" onclick="saveQRCodeImage()">
+                    📥 រក្សាទុករូបភាព QR ទុកស្កេន (Save QR)
+                </button>
+
+                <div class="payment-meta-box">
+                    <div class="row">
+                        <span>🏦 <strong>Bakong / Account ID:</strong></span>
+                        <strong id="displayBakongId" style="color:var(--accent-cyan);">ariyak_store@aclb</strong>
+                    </div>
+                    <div class="row" style="margin-top:4px;">
+                        <span>🏷️ <strong>លេខកូដកុម្ម៉ង់ (Order Ref):</strong></span>
+                        <strong id="displayOrderRef" style="color:var(--accent-amber);">#AK-8921</strong>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:8px;" id="qrScanNotice">
+                        *ចំនួនទឹកប្រាក់ត្រូវបានកំណត់ក្នុង QR រួចរាល់។ បើក App ធនាគារណាក៏បាន (ABA, ACLEDA, Bakong) រួចស្កេនដើម្បីទូទាត់ភ្លាមៗ។
+                    </div>
+                </div>
+
+                <button class="primary-action-btn" onclick="completePayment()">
+                    <span id="btnConfirmPaid">✅ ខ្ញុំបានទូទាត់រួចរាល់ (I've Paid)</span>
+                </button>
+                <button class="secondary-action-btn" onclick="openAdminTelegram()">
+                    <span id="btnContactAdmin">💬 ទាក់ទង Admin តាម Telegram</span>
+                </button>
+            </div>
+
+            <!-- Out of Stock Alert Banner (Shown if item is toggled out of stock) -->
+            <div class="out-stock-alert-banner" id="modalOutStockBanner" style="display:none;">
+                <div style="font-size:32px; margin-bottom:6px;">❌</div>
+                <h4 style="font-size:15px; color:var(--accent-red); margin-bottom:4px;" id="outStockHeading">ទំនិញនេះអស់ពីស្តុកបណ្តោះអាសន្ន</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;" id="outStockNotice">
+                    សូមទាក់ទង Admin តាម Telegram ដើម្បីកក់ទុកជាមុន។
+                </p>
+                <button class="secondary-action-btn" onclick="openAdminTelegram()">
+                    💬 ទាក់ទង Admin តាម Telegram
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification Bubble -->
+    <div class="toast-bubble" id="toastBubble">
+        <span id="toastMsg">Notification message</span>
+    </div>
+
+    <!-- Modular Script Imports -->
+    <script src="js/products.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/khqr.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
