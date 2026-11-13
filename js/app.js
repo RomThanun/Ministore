@@ -161,7 +161,7 @@ function renderProductsList() {
                 <div class="product-card ${!inStock ? 'card-out-stock' : ''}" onclick="openProductModal('${p.id}')">
                     <div class="card-header-icon">
                         <div class="prod-icon-box">
-                            <img src="${p.image}" class="prod-brand-icon" alt="${p.name}" loading="lazy">
+                            <img src="${p.image}" class="prod-brand-icon" alt="${p.name}" loading="lazy" onerror="this.outerHTML='<span style=\\'font-size:24px;\\'>${p.fallbackIcon || '💎'}</span>';">
                         </div>
                         <span class="prod-tag ${p.tagClass}">${p.tag}</span>
                     </div>
@@ -224,7 +224,7 @@ function openProductModal(productId) {
 
     // Populate Details with Brand Icon
     const modalIconBox = document.getElementById('modalProductIcon');
-    modalIconBox.innerHTML = `<img src="${p.image}" class="prod-brand-icon" alt="${p.name}">`;
+    modalIconBox.innerHTML = `<img src="${p.image}" class="prod-brand-icon" alt="${p.name}" onerror="this.outerHTML='<span style=\\'font-size:30px;\\'>${p.fallbackIcon || '💎'}</span>';">`;
 
     document.getElementById('modalProductName').textContent = p.name;
     document.getElementById('modalProductBadge').textContent = p.tag;
